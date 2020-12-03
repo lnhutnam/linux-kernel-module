@@ -14,17 +14,13 @@
 
 static int chardev_open(struct inode *inode, struct file *file);
 static int chardev_release(struct inode *inode, struct file *file);
-static long chardev_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
 static ssize_t chardev_read(struct file *file, char __user *buf, size_t len, loff_t *offset);
-static ssize_t chardev_write(struct file *file, const char __user *buf, size_t len, loff_t *offset);
 
 static const struct file_operations chardev_fops = {
     .owner      = THIS_MODULE,
     .open       = chardev_open,
     .release    = chardev_release,
-    .unlocked_ioctl = chardev_ioctl,
-    .read       = chardev_read,
-    .write       = chardev_write
+    .read       = chardev_read
 };
 
 struct char_device_data {
@@ -83,11 +79,6 @@ static int chardev_release(struct inode *inode, struct file *file) {
     return 0;
 }
 
-static long chardev_ioctl(struct file *file, unsigned int cmd, unsigned long arg) {
-    printk("CHARDEV: Device ioctl\n");
-    return 0;
-}
-
 static int power(int num, int times) {
     int i;
     int res = num;
@@ -117,10 +108,6 @@ static ssize_t chardev_read(struct file *file, char __user *buf, size_t len, lof
 
     (*offset) += bytes;
     return bytes;
-}
-
-static ssize_t chardev_write(struct file *file, const char __user *buf, size_t len, loff_t *offset) {
-    return 0;
 }
 
 MODULE_LICENSE("GPL");
